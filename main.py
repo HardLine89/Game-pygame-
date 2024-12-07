@@ -12,14 +12,16 @@ clock = pygame.time.Clock()
 clock.tick(FPS)
 running = True
 
-TILE_WIDTH = 32  # Уменьшенная ширина
-TILE_HEIGHT = 16  # Уменьшенная высота
+TILE_WIDTH = 128  # Уменьшенная ширина
+TILE_HEIGHT = 64  # Уменьшенная высота
 GRID_WIDTH = 10
 GRID_HEIGHT = 10
 
 # Загрузка ассетов
 stone_tile = pygame.image.load("assets/floor/SmoothStone.png").convert_alpha()
+stone_tile = pygame.transform.scale(stone_tile, (128, 128))
 water_tile = pygame.image.load("assets/floor/Water.png").convert_alpha()
+water_tile = pygame.transform.scale(water_tile, (128, 128))
 
 
 # Пример карты: 0 — трава, 1 — вода
@@ -56,8 +58,8 @@ while running:
     # Рисуем карту с ассетами
     for row in range(GRID_HEIGHT):
         for col in range(GRID_WIDTH):
-            tile_x = 400 + (col - row) * TILE_WIDTH // 2
-            tile_y = 100 + (col + row) * TILE_HEIGHT // 2
+            tile_x = 650 + (col - row) * TILE_WIDTH // 2
+            tile_y = 50 + (col + row) * TILE_HEIGHT // 2
             draw_tile(screen, tile_x, tile_y, map_data[row][col])
 
     pygame.display.flip()
