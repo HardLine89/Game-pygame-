@@ -13,26 +13,35 @@ running = True
 # Загрузка ассетов
 stone_tile = pygame.image.load("assets/floor/SmoothStone.png").convert_alpha()
 water_tile = pygame.image.load("assets/floor/Water.png").convert_alpha()
+background_image = pygame.image.load("assets/CavePixelArt.png").convert_alpha()
 
 
 # Масштабируем тайлы в зависимости от размера окна
-def scale_tile_images(width, height):
-    global TILE_WIDTH, TILE_HEIGHT
-    scale_factor_x = width / 1280  # Исходная ширина окна
-    scale_factor_y = height / 720  # Исходная высота окна
-    TILE_WIDTH = int(128 * scale_factor_x)
-    TILE_HEIGHT = int(64 * scale_factor_y)
-    stone_tile_scaled = pygame.transform.scale(stone_tile, (TILE_WIDTH, TILE_WIDTH))
-    water_tile_scaled = pygame.transform.scale(water_tile, (TILE_WIDTH, TILE_WIDTH))
+def scale_tile_images():
+    stone_tile_scaled = pygame.transform.scale(
+        stone_tile, (config.TILE_WIDTH, config.TILE_WIDTH)
+    )
+    water_tile_scaled = pygame.transform.scale(
+        water_tile, (config.TILE_WIDTH, config.TILE_WIDTH)
+    )
     return stone_tile_scaled, water_tile_scaled
 
 
+def scale_background(screen_width, screen_height):
+    background_scaled = pygame.transform.scale(background_image, (screen_width, screen_height))
+    return background_scaled
+
+
 # Функция отрисовки тайла
-def draw_tile(screen, x, y, tile_type):
+def draw_tile(screen_obj, x, y, tile_type):
     if tile_type == 0:
-        screen.blit(stone_tile, (x - TILE_WIDTH // 2, y - TILE_HEIGHT // 2))
+        screen_obj.blit(
+            stone_tile, (x - config.TILE_WIDTH // 2, y - config.TILE_HEIGHT // 2)
+        )
     elif tile_type == 1:
-        screen.blit(water_tile, (x - TILE_WIDTH // 2, y - TILE_HEIGHT // 2))
+        screen_obj.blit(
+            water_tile, (x - config.TILE_WIDTH // 2, y - config.TILE_HEIGHT // 2)
+        )
 
 
 # Пример карты: 0 — трава, 1 — вода
@@ -64,7 +73,8 @@ while running:
                 screen = pygame.display.set_mode((width, height), RESIZABLE)
 
     # Масштабируем ассеты в зависимости от размера окна
-    stone_tile, water_tile = scale_tile_images(screen.get_width(), screen.get_height())
+    stone_tile, water_tile = scale_tile_images()
+    background = scale_background(screen.get_width(), screen.get_height())
 
     # Расчет смещения для центрирования карты по экрану
     map_width = config.GRID_WIDTH * config.TILE_WIDTH
@@ -72,7 +82,7 @@ while running:
     offset_x = screen.get_width() // 2
     offset_y = (screen.get_height() - map_height) // 2
 
-    screen.fill((0, 0, 0))
+    screen.blit(background, (0, 0))  # Отображаем фон
 
     # Рисуем карту с ассетами
     for row in range(config.GRID_HEIGHT):
