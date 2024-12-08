@@ -2,7 +2,7 @@ import pygame
 from pygame.locals import *
 import config
 from entities.hero import Hero
-from utils import draw_tile, scale_tile_image
+from utils import draw_tile, scale_tile_image, scale_background
 
 pygame.init()
 screen = pygame.display.set_mode(
@@ -19,22 +19,14 @@ wall_tile = pygame.image.load("assets/wall/Brick.png").convert_alpha()
 player_sprite = pygame.image.load("assets/player/Soldier-Idle.png").convert_alpha()
 background_image = pygame.image.load("assets/CavePixelArt.png").convert_alpha()
 
-
-def scale_background(screen_width, screen_height):
-    background_scaled = pygame.transform.scale(
-        background_image, (screen_width, screen_height)
-    )
-    return background_scaled
-
-
-# Пример карты: 0 — трава, 1 — вода
+# Пример карты: 0 - земля, 1 - вода, 2 - стена
 map_data = [
     [2, 2, 2, 2, 2, 2, 2, 2, 2, 2],
     [2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
-    [0, 0, 0, 0, 0, 0, 0, 0, 0, 0],
+    [0, 0, 0, 0, 0, 1, 0, 0, 0, 0],
     [2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
     [2, 0, 0, 0, 0, 0, 0, 0, 0, 0],
@@ -85,13 +77,12 @@ while running:
         scale_tile_image(image)
         for image in (stone_tile, water_tile, wall_tile, player_sprite)
     )
-    background = scale_background(screen.get_width(), screen.get_height())
+    # background = scale_background(screen.get_width(), screen.get_height())
+    background = scale_background(screen.get_width(), screen.get_height(), background_image)
 
     # Расчет смещения для центрирования карты по экрану
-    map_width = config.GRID_WIDTH * config.TILE_WIDTH
-    map_height = config.GRID_HEIGHT * config.TILE_HEIGHT
     offset_x = screen.get_width() // 2
-    offset_y = (screen.get_height() - map_height) // 2
+    offset_y = (screen.get_height() - config.MAP_HEIGHT) // 2
 
     screen.blit(background, (0, 0))  # Отображаем фон
     tile_images = {0: stone_tile, 1: water_tile, 2: wall_tile}  # Земля  # Вода  # Стена
